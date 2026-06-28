@@ -42,15 +42,11 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      # 【终极修复】跳过官方插件的路径坑，直接手动强制在全局安装官方的 eas-cli
+      # 【步骤 1】在全局安全安装新版 eas-cli
       - name: Global Install EAS CLI
         run: npm install -g eas-cli
 
-      # 【安全认证】使用你的 EXPO_TOKEN 完成登录认证
-      - name: Setup Expo Token
-        run: eas login --token "${{ secrets.EXPO_TOKEN }}"
-
-      # 【直接触发】直接调用全局安装成功的 eas 命令，100% 不再报错找不到命令
+      # 【步骤 2】直接触发打包，新版 eas 会自动在后台读取上方的 EXPO_TOKEN 环境变量完成认证
       - name: Trigger EAS build and wait for completion
         run: eas build --non-interactive --wait --json --profile "${{ inputs.profile }}" --platform "${{ inputs.platform }}" > eas-build.json
 
