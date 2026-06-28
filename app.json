@@ -3,44 +3,13 @@
     "name": "sub2api-mobile",
     "slug": "sub2api-mobile",
     "version": "1.0.0",
-    "orientation": "portrait",
-    "icon": "./icons/ios/AppIcon.appiconset/icon-1024.png",
-    "userInterfaceStyle": "light",
-    "splash": {
-      "image": "./assets/splash-icon.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
-    },
-    "ios": {
-      "supportsTablet": true,
-      "icon": "./icons/ios/AppIcon.appiconset/icon-1024.png",
-      "bundleIdentifier": "com.ppx.sub2apimobile",
-      "infoPlist": {
-        "ITSAppUsesNonExemptEncryption": false
+    "extra": {
+      "eas": {
+        "projectId": "10f84668-7117-4c32-8a84-22fae5e20425"
       }
     },
-    "android": {
-      "icon": "./icons/android/playstore-icon.png",
-      "package": "com.ppx.sub2apimobile",
-      "adaptiveIcon": {
-        "backgroundColor": "#E6F4FE",
-        "foregroundImage": "./icons/android/playstore-icon.png"
-      },
-      "predictiveBackGestureEnabled": false
-    },
-    "web": {
-      "favicon": "./icons/ios/AppIcon.appiconset/icon-1024.png"
-    },
-    "plugins": [
-      "expo-router",
-      "expo-secure-store"
-    ],
-    "extra": {
-      "router": {}
-    },
-    "runtimeVersion": {
-      "policy": "appVersion"
-    },
-    "scheme": "sub2apimobile"
+    "ios": { "bundleIdentifier": "com.ppx.sub2apimobile", "supportsTablet": true },
+    "android": { "package": "com.ppx.sub2apimobile" },
+    "runtimeVersion": { "policy": "appVersion" }
   }
 }
