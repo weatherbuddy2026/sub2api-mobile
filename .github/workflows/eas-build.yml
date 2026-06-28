@@ -26,8 +26,6 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
-    env:
-      EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
 
     steps:
       - name: Checkout
@@ -46,8 +44,17 @@ jobs:
       - name: Global Install EAS CLI
         run: npm install -g eas-cli
 
-      # 【步骤 2】直接触发打包，新版 eas 会自动在后台读取上方的 EXPO_TOKEN 环境变量完成认证
+      # 【核心新增：非交互式自动初始化】
+      # 这行命令会在你的 Expo 账号下全自动创建一个叫做 sub2api-mobile 的新项目，并自动生成绑定关系
+      - name: Automatically Initialize EAS Project
+        env:
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+        run: eas init --non-interactive --name "sub2api-mobile"
+
+      # 【步骤 2】触发打包
       - name: Trigger EAS build and wait for completion
+        env:
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
         run: eas build --non-interactive --wait --json --profile "${{ inputs.profile }}" --platform "${{ inputs.platform }}" > eas-build.json
 
       - name: Publish build links in workflow summary
