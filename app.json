@@ -44,25 +44,3 @@
     "scheme": "sub2apimobile"
   }
 }
-          const lines = [];
-          for (const build of builds) {
-            const platform = String(build.platform || 'unknown').toUpperCase();
-            const detailsUrl = build.buildDetailsPageUrl || build.detailsPageUrl || build.url;
-            const downloadUrl = build?.artifacts?.buildUrl || build?.artifacts?.applicationArchiveUrl;
-
-            if (detailsUrl) {
-              lines.push(`- ${platform} details: ${detailsUrl}`);
-            }
-            if (downloadUrl) {
-              lines.push(`- ${platform} download: ${downloadUrl}`);
-            }
-          }
-
-          const summary = [
-            '## EAS Build Results',
-            '',
-            ...(lines.length > 0 ? lines : ['- Build finished, but no URLs were returned by EAS CLI.'])
-          ].join('\n');
-
-          fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY, `${summary}\n`);
-          EOF
