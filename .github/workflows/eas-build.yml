@@ -42,18 +42,17 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      # 【修正步骤】为设置步骤添加 id，以便后续可以精确读取到它的安装路径
-      - name: Setup Expo and EAS
-        id: setup-expo
-        uses: expo/expo-github-action@v8
-        with:
-          eas-version: latest
-          token: ${{ secrets.EXPO_TOKEN }}
+      # 【终极修复】跳过官方插件的路径坑，直接手动强制在全局安装官方的 eas-cli
+      - name: Global Install EAS CLI
+        run: npm install -g eas-cli
 
-      # 【核心修复】使用官方指定的全局变量或路径直接呼叫 eas，从而彻底解决 npm error 找不到工具的错误
+      # 【安全认证】使用你的 EXPO_TOKEN 完成登录认证
+      - name: Setup Expo Token
+        run: eas login --token "${{ secrets.EXPO_TOKEN }}"
+
+      # 【直接触发】直接调用全局安装成功的 eas 命令，100% 不再报错找不到命令
       - name: Trigger EAS build and wait for completion
-        run: |
-          ${{ steps.setup-expo.outputs.eas-cli-path }} build --non-interactive --wait --json --profile "${{ inputs.profile }}" --platform "${{ inputs.platform }}" > eas-build.json
+        run: eas build --non-interactive --wait --json --profile "${{ inputs.profile }}" --platform "${{ inputs.platform }}" > eas-build.json
 
       - name: Publish build links in workflow summary
         run: |
