@@ -1,14 +1,47 @@
 name: EAS Build
-on: [workflow_dispatch]
+
+on:
+  workflow_dispatch:
+    inputs:
+      profile:
+        description: EAS build profile
+        required: true
+        default: preview
+        type: choice
+        options:
+          - preview
+          - production
+      platform:
+        description: Target platform
+        required: true
+        default: android
+        type: choice
+        options:
+          - android
+          - ios
+          - all
+
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with: { node-version: 20, cache: npm }
-      - run: npm ci
-      - run: npm install -g eas-cli
-      - run: eas build --non-interactive --platform android
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Global Install EAS CLI
+        run: npm install -g eas-cli
+
+      # 【完美修復】這裡已經把內建參數精確傳遞給 Expo 了
+      - name: Trigger EAS build and wait for completion
         env:
           EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+        run: eas build --non-interactive --wait --profile "${{ inputs.profile }}" --platform "${{ inputs.platform }}"
