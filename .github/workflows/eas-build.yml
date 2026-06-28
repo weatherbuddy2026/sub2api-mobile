@@ -39,19 +39,21 @@ jobs:
           node-version: 20
           cache: npm
 
-      # 【已修改】先把项目的依赖安装好
       - name: Install dependencies
         run: npm ci
 
-      # 【已修改】再安装 Expo 和 EAS 工具，这样它的缓存就不会被上一轮的 npm ci 冲掉了
+      # 【修正步骤】为设置步骤添加 id，以便后续可以精确读取到它的安装路径
       - name: Setup Expo and EAS
+        id: setup-expo
         uses: expo/expo-github-action@v8
         with:
           eas-version: latest
           token: ${{ secrets.EXPO_TOKEN }}
 
+      # 【核心修复】使用官方指定的全局变量或路径直接呼叫 eas，从而彻底解决 npm error 找不到工具的错误
       - name: Trigger EAS build and wait for completion
-        run: npx eas build --non-interactive --wait --json --profile "${{ inputs.profile }}" --platform "${{ inputs.platform }}" > eas-build.json
+        run: |
+          ${{ steps.setup-expo.outputs.eas-cli-path }} build --non-interactive --wait --json --profile "${{ inputs.profile }}" --platform "${{ inputs.platform }}" > eas-build.json
 
       - name: Publish build links in workflow summary
         run: |
